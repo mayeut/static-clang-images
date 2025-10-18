@@ -24,13 +24,15 @@ jobs:
       fail-fast: false
       matrix:
         platform:
-          - amd64
           - 386
-          - arm64
-          - s390x
-          - ppc64le
+          - amd64
           - arm
+          - arm64
+          - loong64
+          - ppc64le
           - riscv64
+          - s390x
+
     steps:
       - uses: actions/checkout@v5
 
