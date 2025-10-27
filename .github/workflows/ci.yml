@@ -65,7 +65,7 @@ jobs:
       # TODO add some basic tests here
 
       - name: Upload archive
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: static-clang-${{ matrix.platform }}
           path: binaries/static-clang-linux-${{ matrix.platform }}.tar.xz
@@ -98,7 +98,7 @@ jobs:
 
       - name: Upload digest
         if: github.event_name == 'push'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: digests-${{ matrix.platform }}
           path: /tmp/digests/*
@@ -118,7 +118,7 @@ jobs:
       - uses: actions/checkout@v5
 
       - name: Download digests
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           path: /tmp/digests
           pattern: digests-*
@@ -164,7 +164,7 @@ jobs:
       - uses: actions/checkout@v5
 
       - name: Download artifacts
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           path: binaries
           pattern: static-clang-*
