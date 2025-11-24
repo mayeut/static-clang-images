@@ -34,7 +34,7 @@ jobs:
           - s390x
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Get clang version
         id: llvm-version
@@ -115,7 +115,7 @@ jobs:
     needs:
       - build_image
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Download digests
         uses: actions/download-artifact@v6
@@ -161,7 +161,7 @@ jobs:
     needs:
       - build_image
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Download artifacts
         uses: actions/download-artifact@v6
