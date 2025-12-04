@@ -35,6 +35,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
 
       - name: Get clang version
         id: llvm-version
@@ -93,8 +95,10 @@ jobs:
         if: github.event_name == 'push'
         run: |
           mkdir -p /tmp/digests
-          digest="${{ steps.build.outputs.digest }}"
+          digest="${STEPS_BUILD_OUTPUTS_DIGEST}"
           touch "/tmp/digests/${digest#sha256:}"
+        env:
+          STEPS_BUILD_OUTPUTS_DIGEST: ${{ steps.build.outputs.digest }}
 
       - name: Upload digest
         if: github.event_name == 'push'
@@ -116,6 +120,8 @@ jobs:
       - build_image
     steps:
       - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
 
       - name: Download digests
         uses: actions/download-artifact@v6
@@ -162,6 +168,8 @@ jobs:
       - build_image
     steps:
       - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
 
       - name: Download artifacts
         uses: actions/download-artifact@v6
