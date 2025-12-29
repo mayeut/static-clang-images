@@ -60,6 +60,7 @@ RUN cmake --build build \
     --target install-clang-resource-headers-stripped \
     --target install-lld-stripped \
     --target install-llvm-as-stripped \
+    --target install-llvm-ranlib-stripped \
     --target install-addr2line-stripped \
     --target install-ar-stripped \
     --target install-c++filt-stripped \
