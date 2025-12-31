@@ -18,12 +18,13 @@ RUN apk add --no-cache gcc libstdc++-dev musl-dev zlib-dev zlib-static zstd-dev 
 RUN xx-clang --print-cmake-defines
 RUN --mount=type=bind,target=/tmp/context/llvm-release-keys.asc,source=llvm-release-keys.asc \
     gpg --import /tmp/context/llvm-release-keys.asc && \
-    curl -fsSLo /tmp/llvm-project.tar.xz.sig "https://github.com/llvm/llvm-project/releases/download/llvmorg-${LLVM_VERSION}/llvm-project-${LLVM_VERSION}.src.tar.xz.sig" && \
-    curl -fsSLo /tmp/llvm-project.tar.xz "https://github.com/llvm/llvm-project/releases/download/llvmorg-${LLVM_VERSION}/llvm-project-${LLVM_VERSION}.src.tar.xz" && \
+    curl -fsSLo /tmp/llvm-project.tar.xz.sig --retry 5 "https://github.com/llvm/llvm-project/releases/download/llvmorg-${LLVM_VERSION}/llvm-project-${LLVM_VERSION}.src.tar.xz.sig" && \
+    curl -fsSLo /tmp/llvm-project.tar.xz --retry 5 "https://github.com/llvm/llvm-project/releases/download/llvmorg-${LLVM_VERSION}/llvm-project-${LLVM_VERSION}.src.tar.xz" && \
     gpg --verify /tmp/llvm-project.tar.xz.sig /tmp/llvm-project.tar.xz && \
     mkdir llvm-project && \
     tar --strip-components 1 -xf /tmp/llvm-project.tar.xz -C llvm-project && \
-    rm /tmp/llvm-project*
+    rm /tmp/llvm-project* && \
+    rm -rf ~/.gnupg
 RUN cmake \
     -DBUILD_SHARED_LIBS=OFF \
     -DCMAKE_SYSTEM_NAME=Linux \
@@ -43,6 +44,7 @@ RUN cmake \
     -DCMAKE_LINK_SEARCH_START_STATIC=ON \
     -DCMAKE_EXE_LINKER_FLAGS='-static-libgcc -static' \
     -DCMAKE_FIND_LIBRARY_SUFFIXES='.a' \
+    -DCMAKE_SKIP_RPATH=ON \
     -DZLIB_USE_STATIC_LIBS=ON \
     -DLLVM_USE_STATIC_ZSTD=ON \
     -DLLVM_STATIC_LINK_CXX_STDLIB=ON \
@@ -101,7 +103,6 @@ RUN cmake \
     -DLLVM_TOOL_REMARKS_SHLIB_BUILD=OFF \
     -DLLVM_USE_LINKER=lld \
     -G Ninja -B build -S llvm-project/llvm
-
 RUN cmake \
       --build build \
       --target clang \
@@ -116,9 +117,18 @@ RUN cmake \
       --target llvm-size \
       --target llvm-strings \
       --target llvm-symbolizer
-
-RUN cmake --install build --strip && rm -rf /opt/clang/bin/hmaptool /opt/clang/lib/cmake
+RUN cmake --install build --strip && \
+    rm -rf /opt/clang/bin/hmaptool /opt/clang/lib/cmake
+# check all binaries are statically linked
 RUN xx-verify --static /opt/clang/bin/*
+# check expected files in distribution
+RUN --mount=type=bind,target=/tmp/context/expected-files.txt,source=expected-files.txt \
+    find /opt/clang | sort | tee /tmp/files.txt && \
+    diff -u /tmp/context/expected-files.txt /tmp/files.txt && \
+    rm /tmp/files.txt
+# minimal check that binaries are working
+RUN /opt/clang/bin/ld.lld --version && \
+    for FILE in $(find /opt/clang/bin -type f -not -name 'lld'); do ${FILE} --version || exit 1; done
 
 FROM scratch
 COPY --from=builder /opt/clang /opt/clang
