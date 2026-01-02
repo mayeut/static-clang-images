@@ -41,8 +41,8 @@ jobs:
           path: .cache/buildx-x86_64-bootstrap
           key: buildx-x86_64-bootstrap-${{ github.sha }}-${{ github.ref_type }}
           restore-keys: |
-            buildx-x86_64-bootstrap-${{ github.sha }}
-            buildx-x86_64-bootstrap
+            buildx-x86_64-bootstrap-${{ github.sha }}-
+            buildx-x86_64-bootstrap-
           lookup-only: ${{ github.ref_type == 'tag' }}  # zizmor: ignore[cache-poisoning]
       - name: Cache Docker cache mounts
         if: ${{ github.ref_type != 'tag' }}
@@ -51,7 +51,7 @@ jobs:
           path: .cache/buildx-x86_64-bootstrap-cache-mounts
           key: buildx-x86_64-bootstrap-cache-mounts-${{ github.sha }}
           restore-keys: |
-            buildx-x86_64-bootstrap-cache-mount
+            buildx-x86_64-bootstrap-cache-mounts-
       - name: Restore Docker cache mounts
         if: ${{ github.ref_type != 'tag' }}
         uses: reproducible-containers/buildkit-cache-dance@5b81f4d29dc8397a7d341dba3aeecc7ec54d6361 # v3.3.0
@@ -129,7 +129,7 @@ jobs:
           path: .cache/buildx-${{ matrix.platform }}-cache-mounts
           key: buildx-${{ matrix.platform }}-cache-mounts-${{ github.sha }}
           restore-keys: |
-            buildx-${{ matrix.platform }}-cache-mount
+            buildx-${{ matrix.platform }}-cache-mounts-
 
       - name: Restore Docker cache mounts
         if: ${{ github.ref_type != 'tag' }}
