@@ -1,3 +1,4 @@
-binaries/
+.cache/
 .git/
 .github/
+binaries/
