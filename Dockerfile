@@ -64,6 +64,9 @@ RUN xx-clang --print-cmake-defines
 ENV PATH="/work/bootstrap/bin:$PATH"
 RUN --mount=type=cache,target=/tmp/ccache-build <<EOT
 set -ex
+# the bootstrapped compiler is not mtime friendly as it can also be rebuilt
+# even if the binary is identical in the end, use content hash instead
+export CCACHE_COMPILERCHECK=content
 LLVM_CCACHE_DIR=/tmp/ccache-build
 LLVM_CCACHE_MAXSIZE=350M
 ccache -d ${LLVM_CCACHE_DIR} -M ${LLVM_CCACHE_MAXSIZE} --zero-stats
