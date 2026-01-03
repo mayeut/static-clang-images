@@ -1,16 +1,15 @@
 ARG ALPINE_BUILD_TAG=3.23
 ARG LLVM_VERSION=21.1.8
 ARG XX_VERSION=1.9.0
+ARG BOOTSTRAP_SOURCE=bootstrap_builder
 
-FROM --platform=$BUILDPLATFORM registry.alpinelinux.org/img/alpine:${ALPINE_BUILD_TAG} AS bootstrap
+FROM --platform=$BUILDPLATFORM registry.alpinelinux.org/img/alpine:${ALPINE_BUILD_TAG} AS base_builder
 RUN mkdir /work
 WORKDIR /work
-RUN apk add --no-cache ccache cmake clang lld llvm ninja-is-really-ninja python3
-RUN apk add --no-cache libstdc++-dev musl-dev zlib-dev zstd-dev
+RUN apk add --no-cache ccache cmake clang curl gpg gpg-agent lld llvm ninja-is-really-ninja python3 xz
 ARG LLVM_VERSION
 RUN --mount=type=bind,target=/tmp/context/llvm-release-keys.asc,source=llvm-release-keys.asc <<EOT
 set -ex
-apk add --no-cache curl gpg gpg-agent xz --virtual .get-llvm-sources-deps
 gpg --import /tmp/context/llvm-release-keys.asc
 curl -fsSLo /tmp/llvm-project.tar.xz.sig --retry 5 "https://github.com/llvm/llvm-project/releases/download/llvmorg-${LLVM_VERSION}/llvm-project-${LLVM_VERSION}.src.tar.xz.sig"
 curl -fsSLo /tmp/llvm-project.tar.xz     --retry 5 "https://github.com/llvm/llvm-project/releases/download/llvmorg-${LLVM_VERSION}/llvm-project-${LLVM_VERSION}.src.tar.xz"
@@ -19,8 +18,10 @@ mkdir llvm-project
 tar --strip-components 1 -xf /tmp/llvm-project.tar.xz -C llvm-project
 rm /tmp/llvm-project*
 rm -rf ~/.gnupg
-apk del .get-llvm-sources-deps
 EOT
+
+FROM base_builder AS bootstrap_builder
+RUN apk add --no-cache libstdc++-dev musl-dev zlib-dev zstd-dev
 COPY staged-build.cmake /work/staged-build.cmake
 RUN --mount=type=cache,target=/tmp/ccache-bootstrap <<EOT
 set -ex
@@ -53,17 +54,29 @@ cmake --build bootstrap \
       --target llvm-strip \
       --target llvm-symbolizer
 ccache -d ${LLVM_CCACHE_DIR} -M ${LLVM_CCACHE_MAXSIZE} --show-stats
+# delete unused object files
+find bootstrap -path '*.dir/*.o' -delete
 EOT
+
+FROM scratch AS bootstrap_artifact
+COPY --link --from=bootstrap_builder /work/bootstrap /work/bootstrap
+
+FROM scratch AS artifact
+ADD bootstrap_artifact.tar.xz /
+
+FROM ${BOOTSTRAP_SOURCE} AS bootstrap_source
 
 FROM --platform=$BUILDPLATFORM tonistiigi/xx:${XX_VERSION} AS xx
 
-FROM bootstrap AS builder
+FROM base_builder AS builder
 COPY --from=xx / /
 ARG TARGETPLATFORM
 RUN xx-info env
 RUN xx-apk add --no-cache gcc libstdc++-dev musl-dev zlib-dev zlib-static zstd-dev zstd-static
 RUN xx-clang --print-cmake-defines
+COPY --link --from=bootstrap_source /work/bootstrap /work/bootstrap
 ENV PATH="/work/bootstrap/bin:$PATH"
+COPY staged-build.cmake /work/staged-build.cmake
 RUN --mount=type=cache,target=/tmp/ccache-build <<EOT
 set -ex
 # the bootstrapped compiler is not mtime friendly as it can also be rebuilt

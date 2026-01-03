@@ -1,1 +1,3 @@
+.cache/
 binaries/
+bootstrap_artifact.tar*
