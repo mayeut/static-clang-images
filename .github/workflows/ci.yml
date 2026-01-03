@@ -171,6 +171,9 @@ jobs:
           context: .
           platforms: linux/${{ matrix.platform }}
           push: true
+          build-args: |
+            LLVM_VERSION=${{ needs.llvm-version.outputs.version }}
+            BOOTSTRAP_SOURCE=artifact
           outputs: type=image,name=ghcr.io/${{ github.repository_owner }}/static-clang,push-by-digest=true,name-canonical=true,push=true
       - name: Export digest
         if: github.event_name == 'push'
