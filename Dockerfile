@@ -24,6 +24,8 @@ EOT
 COPY staged-build.cmake /work/staged-build.cmake
 RUN --mount=type=cache,target=/tmp/ccache-bootstrap <<EOT
 set -ex
+# use SOURCE_DATE_EPOCH=0 to get reproducible builds for the stage 1 compiler
+export SOURCE_DATE_EPOCH=0
 LLVM_CCACHE_DIR=/tmp/ccache-bootstrap
 LLVM_CCACHE_MAXSIZE=350M
 ccache -d ${LLVM_CCACHE_DIR} -M ${LLVM_CCACHE_MAXSIZE} --zero-stats
