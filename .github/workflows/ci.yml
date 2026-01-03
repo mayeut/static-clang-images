@@ -143,7 +143,6 @@ jobs:
             BOOTSTRAP_SOURCE=artifact
           tags: static-clang:latest
           outputs: type=local,dest=./binaries
-          cache-from: type=local,src=${{ github.workspace }}/.cache/buildx-x86_64-bootstrap
       - name: Prepare Archive
         run: tar cf - -C binaries/opt --owner 0 --group 0 clang | xz -9e -T0 > "binaries/static-clang-linux-${MATRIX_PLATFORM}.tar.xz"
         env:
