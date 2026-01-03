@@ -1,0 +1,23 @@
+repos:
+
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v6.0.0
+  hooks:
+  - id: check-case-conflict
+  - id: check-merge-conflict
+  - id: check-yaml
+  - id: check-toml
+  - id: end-of-file-fixer
+  - id: mixed-line-ending
+  - id: trailing-whitespace
+
+- repo: https://github.com/codespell-project/codespell
+  rev: v2.4.1
+  hooks:
+  - id: codespell
+    args: ["-w"]
+
+- repo: https://github.com/zizmorcore/zizmor-pre-commit
+  rev: v1.19.0
+  hooks:
+  - id: zizmor
