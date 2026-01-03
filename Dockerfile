@@ -14,6 +14,7 @@ gpg --import /tmp/context/llvm-release-keys.asc
 curl -fsSLo /tmp/llvm-project.tar.xz.sig --retry 5 "https://github.com/llvm/llvm-project/releases/download/llvmorg-${LLVM_VERSION}/llvm-project-${LLVM_VERSION}.src.tar.xz.sig"
 curl -fsSLo /tmp/llvm-project.tar.xz     --retry 5 "https://github.com/llvm/llvm-project/releases/download/llvmorg-${LLVM_VERSION}/llvm-project-${LLVM_VERSION}.src.tar.xz"
 gpg --verify /tmp/llvm-project.tar.xz.sig /tmp/llvm-project.tar.xz
+gpgconf --kill gpg-agent
 mkdir llvm-project
 tar --strip-components 1 -xf /tmp/llvm-project.tar.xz -C llvm-project
 rm /tmp/llvm-project*
