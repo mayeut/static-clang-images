@@ -29,7 +29,7 @@ jobs:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           persist-credentials: false
-      - uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548 # v6.1.0
+      - uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
           python-version: "3.14"
       - uses: pre-commit/action@2c7b3805fd2a0fd8c1884dcaebf91fc102a13ecd # v3.0.1
@@ -73,7 +73,7 @@ jobs:
             buildx-x86_64-bootstrap-cache-mounts-
       - name: Restore Docker cache mounts
         if: ${{ github.ref_type != 'tag' }}
-        uses: reproducible-containers/buildkit-cache-dance@5b81f4d29dc8397a7d341dba3aeecc7ec54d6361 # v3.3.0
+        uses: reproducible-containers/buildkit-cache-dance@6f699a72a59e4252f05a7435430009b77e25fe06 # v3.3.1
         with:
           builder: ${{ steps.setup-buildx.outputs.name }}
           cache-dir: .cache/buildx-x86_64-bootstrap-cache-mounts
@@ -142,7 +142,7 @@ jobs:
             buildx-${{ matrix.platform }}-cache-mounts-
       - name: Restore Docker cache mounts
         if: ${{ github.ref_type != 'tag' }}
-        uses: reproducible-containers/buildkit-cache-dance@5b81f4d29dc8397a7d341dba3aeecc7ec54d6361 # v3.3.0
+        uses: reproducible-containers/buildkit-cache-dance@6f699a72a59e4252f05a7435430009b77e25fe06 # v3.3.1
         with:
           builder: ${{ steps.setup-buildx.outputs.name }}
           cache-dir: .cache/buildx-${{ matrix.platform }}-cache-mounts
@@ -173,7 +173,7 @@ jobs:
           if-no-files-found: error
       - name: Login to GitHub Container Registry
         if: github.event_name == 'push'
-        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3.6.0
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -240,7 +240,7 @@ jobs:
             type=pep440,pattern={{major}}.{{minor}}
             type=pep440,pattern={{major}}
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3.6.0
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
