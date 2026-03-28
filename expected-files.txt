@@ -5,7 +5,7 @@
 /opt/clang/bin/c++filt
 /opt/clang/bin/clang
 /opt/clang/bin/clang++
-/opt/clang/bin/clang-21
+/opt/clang/bin/clang-22
 /opt/clang/bin/clang-cl
 /opt/clang/bin/clang-cpp
 /opt/clang/bin/ld.lld
@@ -55,6 +55,9 @@
 /opt/clang/lib/clang/22/include/__clang_hip_runtime_wrapper.h
 /opt/clang/lib/clang/22/include/__clang_hip_stdlib.h
 /opt/clang/lib/clang/22/include/__clang_spirv_builtins.h
+/opt/clang/lib/clang/22/include/__float_float.h
+/opt/clang/lib/clang/22/include/__float_header_macro.h
+/opt/clang/lib/clang/22/include/__float_infinity_nan.h
 /opt/clang/lib/clang/22/include/__stdarg___gnuc_va_list.h
 /opt/clang/lib/clang/22/include/__stdarg___va_copy.h
 /opt/clang/lib/clang/22/include/__stdarg_header_macro.h
@@ -79,19 +82,14 @@
 /opt/clang/lib/clang/22/include/altivec.h
 /opt/clang/lib/clang/22/include/amdgpuintrin.h
 /opt/clang/lib/clang/22/include/ammintrin.h
+/opt/clang/lib/clang/22/include/amo.h
 /opt/clang/lib/clang/22/include/amxavx512intrin.h
-/opt/clang/lib/clang/22/include/amxbf16transposeintrin.h
 /opt/clang/lib/clang/22/include/amxcomplexintrin.h
-/opt/clang/lib/clang/22/include/amxcomplextransposeintrin.h
 /opt/clang/lib/clang/22/include/amxfp16intrin.h
-/opt/clang/lib/clang/22/include/amxfp16transposeintrin.h
 /opt/clang/lib/clang/22/include/amxfp8intrin.h
 /opt/clang/lib/clang/22/include/amxintrin.h
 /opt/clang/lib/clang/22/include/amxmovrsintrin.h
-/opt/clang/lib/clang/22/include/amxmovrstransposeintrin.h
 /opt/clang/lib/clang/22/include/amxtf32intrin.h
-/opt/clang/lib/clang/22/include/amxtf32transposeintrin.h
-/opt/clang/lib/clang/22/include/amxtransposeintrin.h
 /opt/clang/lib/clang/22/include/andes_vector.h
 /opt/clang/lib/clang/22/include/arm64intr.h
 /opt/clang/lib/clang/22/include/arm_acle.h
@@ -165,6 +163,8 @@
 /opt/clang/lib/clang/22/include/cpuid.h
 /opt/clang/lib/clang/22/include/crc32intrin.h
 /opt/clang/lib/clang/22/include/cuda_wrappers
+/opt/clang/lib/clang/22/include/cuda_wrappers/__utility
+/opt/clang/lib/clang/22/include/cuda_wrappers/__utility/declval.h
 /opt/clang/lib/clang/22/include/cuda_wrappers/algorithm
 /opt/clang/lib/clang/22/include/cuda_wrappers/bits
 /opt/clang/lib/clang/22/include/cuda_wrappers/bits/basic_string.h
@@ -266,6 +266,8 @@
 /opt/clang/lib/clang/22/include/riscv_bitmanip.h
 /opt/clang/lib/clang/22/include/riscv_corev_alu.h
 /opt/clang/lib/clang/22/include/riscv_crypto.h
+/opt/clang/lib/clang/22/include/riscv_mips.h
+/opt/clang/lib/clang/22/include/riscv_nds.h
 /opt/clang/lib/clang/22/include/riscv_ntlh.h
 /opt/clang/lib/clang/22/include/riscv_vector.h
 /opt/clang/lib/clang/22/include/rtmintrin.h
@@ -279,6 +281,7 @@
 /opt/clang/lib/clang/22/include/sm4evexintrin.h
 /opt/clang/lib/clang/22/include/sm4intrin.h
 /opt/clang/lib/clang/22/include/smmintrin.h
+/opt/clang/lib/clang/22/include/spirvintrin.h
 /opt/clang/lib/clang/22/include/stdalign.h
 /opt/clang/lib/clang/22/include/stdarg.h
 /opt/clang/lib/clang/22/include/stdatomic.h
@@ -286,6 +289,7 @@
 /opt/clang/lib/clang/22/include/stdckdint.h
 /opt/clang/lib/clang/22/include/stdcountof.h
 /opt/clang/lib/clang/22/include/stddef.h
+/opt/clang/lib/clang/22/include/stddefer.h
 /opt/clang/lib/clang/22/include/stdint.h
 /opt/clang/lib/clang/22/include/stdnoreturn.h
 /opt/clang/lib/clang/22/include/tbmintrin.h
