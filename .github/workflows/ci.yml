@@ -65,7 +65,7 @@ jobs:
         id: setup-buildx
       - name: Cache Docker cache mounts
         if: ${{ github.ref_type != 'tag' }}
-        uses: actions/cache@v5  # zizmor: ignore[cache-poisoning]
+        uses: actions/cache@v5.0.4  # zizmor: ignore[cache-poisoning]
         with:
           path: .cache/buildx-x86_64-bootstrap-cache-mounts
           key: buildx-x86_64-bootstrap-cache-mounts-${{ github.sha }}
@@ -78,7 +78,7 @@ jobs:
           builder: ${{ steps.setup-buildx.outputs.name }}
           cache-dir: .cache/buildx-x86_64-bootstrap-cache-mounts
       - name: Build image
-        uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
+        uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f # v7.1.0
         with:
           context: .
           platforms: linux/amd64
@@ -134,7 +134,7 @@ jobs:
           name: bootstrap_artifact
       - name: Cache Docker cache mounts
         if: ${{ github.ref_type != 'tag' }}
-        uses: actions/cache@v5  # zizmor: ignore[cache-poisoning]
+        uses: actions/cache@v5.0.4  # zizmor: ignore[cache-poisoning]
         with:
           path: .cache/buildx-${{ matrix.platform }}-cache-mounts
           key: buildx-${{ matrix.platform }}-cache-mounts-${{ github.sha }}
@@ -147,7 +147,7 @@ jobs:
           builder: ${{ steps.setup-buildx.outputs.name }}
           cache-dir: .cache/buildx-${{ matrix.platform }}-cache-mounts
       - name: Build image
-        uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
+        uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f # v7.1.0
         with:
           context: .
           platforms: linux/${{ matrix.platform }}
@@ -181,7 +181,7 @@ jobs:
       - name: Push image by digest
         if: github.event_name == 'push'
         id: build
-        uses: docker/build-push-action@d08e5c354a6adb9ed34480a06d141179aa583294 # v7.0.0
+        uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f # v7.1.0
         with:
           context: .
           platforms: linux/${{ matrix.platform }}
@@ -275,6 +275,6 @@ jobs:
       - name: Display shasums
         run: cat binaries/sha256sums.txt
       - name: Release
-        uses: softprops/action-gh-release@153bb8e04406b158c6c84fc1615b65b24149a1fe # v2.6.1
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2.6.2
         with:
           files: 'binaries/*'
