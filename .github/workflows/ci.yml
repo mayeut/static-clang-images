@@ -10,6 +10,7 @@ on:
       - 'README.md'
     branches:
       - main
+      - tmp/prepare-artifacts
     tags:
       - "v*.*.*.*"
 
@@ -276,6 +277,9 @@ jobs:
         working-directory: binaries
       - name: Display shasums
         run: cat binaries/sha256sums.txt
+      - name: Create sha256sums for attestation
+        run: sha256sum *.tar.xz > sha256sums.txt
+        working-directory: binaries
       - name: Release # zizmor: ignore[superfluous-actions]
         uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3.0.0
         with:
