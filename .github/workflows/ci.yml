@@ -253,6 +253,46 @@ jobs:
           docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
             $(printf "ghcr.io/${GITHUB_REPOSITORY_OWNER}/static-clang@sha256:%s " *)
 
+  release_artifacts:
+    name: Create release artifacts
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write  # create attestations
+      attestations: write  # create attestations
+      artifact-metadata: write  # create attestations
+    needs:
+      - build_image
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          pattern: static-clang-*
+          merge-multiple: true
+      - name: Create sha256sums.txt
+        run: sha256sum *.tar.xz > sha256sums.txt
+      - name: Create subject checksums
+        run: sha256sum *.* > "${RUNNER_TEMP}/subject.checksums.txt"
+      - name: Display subject checksums
+        run: cat "${RUNNER_TEMP}/subject.checksums.txt"
+      - uses: actions/attest@59d89421af93a897026c735860bf21b6eb4f7b26 # v4.1.0
+        id: attest
+        with:
+          subject-checksums: "${{ runner.temp }}/subject.checksums.txt"
+      - name: Copy attestation bundle
+        run: cp "${BUNDLE_PATH}" attestation-bundle.json
+        env:
+          BUNDLE_PATH: ${{ steps.attest.outputs.bundle-path }}
+      - name: Display sha256sums.txt
+        run: ls -al . && cat sha256sums.txt
+      - name: Upload archive
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: binaries
+          path: "*.*"
+          if-no-files-found: error
+
   release:
     name: Release
     if: github.ref_type == 'tag'
@@ -260,7 +300,7 @@ jobs:
     permissions:
       contents: write  # create release
     needs:
-      - build_image
+      - release_artifacts
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
@@ -268,14 +308,8 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
+          name: binaries
           path: binaries
-          pattern: static-clang-*
-          merge-multiple: true
-      - name: Create sha256sums
-        run: sha256sum *.tar.xz > sha256sums.txt
-        working-directory: binaries
-      - name: Display shasums
-        run: cat binaries/sha256sums.txt
       - name: Release # zizmor: ignore[superfluous-actions]
         uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3.0.0
         with:
