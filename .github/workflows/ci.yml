@@ -92,7 +92,7 @@ jobs:
       - name: Compress bootstrap artifact
         run: xz -z bootstrap_artifact.tar
       - name: Upload bootstrap artifact
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: bootstrap_artifact
           path: ./bootstrap_artifact.tar.xz
@@ -130,7 +130,7 @@ jobs:
         uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
         id: setup-buildx
       - name: Download bootstrap artifact
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: bootstrap_artifact
       - name: Cache Docker cache mounts
@@ -168,7 +168,7 @@ jobs:
       # TODO add some basic tests here
 
       - name: Upload archive
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: static-clang-${{ matrix.platform }}
           path: binaries/static-clang-linux-${{ matrix.platform }}.tar.xz
@@ -202,7 +202,7 @@ jobs:
           STEPS_BUILD_OUTPUTS_DIGEST: ${{ steps.build.outputs.digest }}
       - name: Upload digest
         if: github.event_name == 'push'
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: digests-${{ matrix.platform }}
           path: /tmp/digests/*
@@ -223,7 +223,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Download digests
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           path: /tmp/digests
           pattern: digests-*
@@ -266,7 +266,7 @@ jobs:
       - build_image
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           pattern: static-clang-*
           merge-multiple: true
@@ -287,7 +287,7 @@ jobs:
       - name: Display sha256sums.txt
         run: ls -al . && cat sha256sums.txt
       - name: Upload archive
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: binaries
           path: "*.*"
@@ -306,7 +306,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Download artifacts
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: binaries
           path: binaries
